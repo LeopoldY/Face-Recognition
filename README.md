@@ -3,6 +3,31 @@
 ## Usages
 
 ### usage of training
+
+Before training, you need to prepare the dataset and the datalist. The dataset should be organized as follows:
+
+```bash
+DATASET_ROOT
+├── ID1
+│   ├── image1.jpg
+│   ├── image2.jpg
+│   └── ...
+├── ID2
+│   ├── image1.jpg
+│   ├── image2.jpg
+│   └── ...
+└── ...
+```
+
+then you can use `generate_datalist.py` under the `utils` folder to generate the datalist, the datalist should be organized as follows:
+
+```bash
+label1 PATH/TO/IMAGE1
+label1 PATH/TO/IMAGE2
+...
+```
+After preparing the dataset and the datalist, you can start training with the following steps:
+
 1. Install the required packages
 
 2. Alter the `config.yml` file to your needs, the arguments are as follows:
