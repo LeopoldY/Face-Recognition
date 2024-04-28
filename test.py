@@ -2,12 +2,13 @@ import torch
 from torch import nn
 import cv2
 import torchvision.transforms as T
-from backbones.resnet import iresnet18
+from backbones.resnet import iresnet18, iresnet50
+from backbones.cnn import cnn
 
 
 if __name__ == '__main__':
-    img1 = cv2.imread('data/images/img_0.jpg') 
-    img2 = cv2.imread('data/images/img_2.jpg')
+    img1 = cv2.imread('data/images/img_2.jpg') 
+    img2 = cv2.imread('data/images/img_4.jpg')
 
     transform = T.Compose([
                     T.ToTensor(),
@@ -29,6 +30,6 @@ if __name__ == '__main__':
     feat1 = model(img1)
     feat2 = model(img2)
 
-    sim = nn.functional.cosine_similarity(feat1, feat2)
+    sim = nn.functional.cosine_similarity(feat1, feat2).item()
     print(sim)
 

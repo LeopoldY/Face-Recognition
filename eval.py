@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from backbones.resnet import iresnet18, iresnet50
+from backbones.cnn import cnn
 from data.face_dataset import FaceDataset
 from utils.acc_eval import compute_accuracy
 
@@ -33,6 +34,8 @@ def eval(args):
         featureExtractor = iresnet50()
     elif args.backbone == 'iresnet18':
         featureExtractor = iresnet18()
+    elif args.backbone == 'cnn':
+        featureExtractor = cnn()
     else: raise ValueError("Invalid backbone")
     model_dict = torch.load(args.model_path)
     featureExtractor.load_state_dict(model_dict['model_state_dict'])

@@ -33,3 +33,14 @@ class ArcFace(nn.Module):
         batch_size = len(output)
         output[range(batch_size), label] = phi[range(batch_size), label]
         return output * self.s
+    
+
+class LinearMetric(nn.Module):
+    def __init__(self, embedding_size, class_num):
+        super(LinearMetric, self).__init__()
+        self.infeatures = embedding_size
+        self.outfeatures = class_num
+        self.fc = nn.Linear(embedding_size, class_num)
+
+    def forward(self, x):
+        return self.fc(x)

@@ -7,11 +7,13 @@ import torch
 import torch.nn as nn
 import yaml
 from tqdm import tqdm
+from torch.utils.data import DataLoader
 
 from backbones.resnet import iresnet18, iresnet50
-from data.face_dataset import FaceDataloader, FaceDataset
+from backbones.cnn import cnn
+from data.face_dataset import FaceDataset
 from metrics.FocalLoss import FocalLoss
-from metrics.metrics import ArcFace
+from metrics.metrics import ArcFace, LinearMetric
 
 
 def train(args):
@@ -24,18 +26,21 @@ def train(args):
         print(f"Using device: {device}")
     
     # Load the dataset
-    dataset = FaceDataset(data_root=args.dataset_root, description=args.datalist)
+    dataset = FaceDataset(data_root=args.dataset_root, description=args.datalist, shuffle=True, train=True)
     num_classes = dataset.get_class_num()
-    train_loader = FaceDataloader(dataset=dataset,
-                                  batch_size=args.batch_size,
-                                  num_workers=args.num_workers,
-                                  pin_memory=args.pin_memory)
+    train_loader = DataLoader(dataset, 
+                             batch_size=args.batch_size, 
+                             num_workers=args.num_workers, 
+                             pin_memory=args.pin_memory,
+                             shuffle=True)
 
     # Load the model
     if args.backbone == 'iresnet50':
         featureExtractor = iresnet50()
     elif args.backbone == 'iresnet18':
         featureExtractor = iresnet18()
+    elif args.backbone == 'cnn':
+        featureExtractor = cnn()
     else: raise ValueError("Invalid backbone")
     featureExtractor = featureExtractor.to(device)
 
@@ -43,6 +48,8 @@ def train(args):
     if args.metric == 'arcface':
         metric_fc = ArcFace(512,
                             class_num=num_classes)
+    elif args.metric == 'linear':
+        metric_fc = nn.Linear(512, num_classes)
     else: raise ValueError("Invalid metric function")
     metric_fc = metric_fc.to(device)
 
